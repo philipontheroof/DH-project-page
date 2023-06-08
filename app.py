@@ -4,7 +4,7 @@ import pickle
 import pandas as pd
 import plotly.graph_objects as go
 
-START = 1920
+START = 1980
 END = 1999
 
 
