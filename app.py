@@ -55,7 +55,11 @@ def load_pickle():
 def words_to_df(papers, scope, words):
     x = list(range(scope[0], scope[1]+1))
     ys = {}
+    progress_text = "Operation in progress. Please wait."
+    my_bar = st.progress(0, text=progress_text)
 
+    total_op = len(words) * len(papers) * (scope[1] - scope[0] + 1)
+    op = 0
     for word in words:
         for paper in papers:
             if word not in ys.keys():
@@ -75,6 +79,8 @@ def words_to_df(papers, scope, words):
                         ys[word][paper].append(counts[word]/s)
                 except KeyError:
                     ys[word][paper].append(None)
+                op += 1
+                my_bar.progress(op*100//total_op, text=progress_text)
 
     r = {'x': x}
     for word, v in ys.items():
@@ -82,6 +88,7 @@ def words_to_df(papers, scope, words):
             r[f'{word} {paper}'] = y
 
     df = pd.DataFrame(r)
+    my_bar.empty()
     return df
 
 
