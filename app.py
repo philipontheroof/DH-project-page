@@ -42,17 +42,17 @@ def load_pickle():
     print('unzip done')
 
     counteds = {}
-    for year in range(1920, 1999+1):
-        counteds[year] = {}
-        with open(f'./data/komoran_counter_{year}_chosun.pickle', 'rb') as f:
-            counteds[year]['chosun'] = pickle.load(f)
-        with open(f'./data/komoran_counter_{year}_donga.pickle', 'rb') as f:
-            counteds[year]['donga'] = pickle.load(f)
-        print(f'load {year} done')
+    # for year in range(1920, 1999+1):
+    #     counteds[year] = {}
+    #     with open(f'./data/komoran_counter_{year}_chosun.pickle', 'rb') as f:
+    #         counteds[year]['chosun'] = pickle.load(f)
+    #     with open(f'./data/komoran_counter_{year}_donga.pickle', 'rb') as f:
+    #         counteds[year]['donga'] = pickle.load(f)
+    #     print(f'load {year} done')
     return counteds
 
 
-def words_to_df(dict_data, papers, scope, words):
+def words_to_df(papers, scope, words):
     x = list(range(scope[0], scope[1]+1))
     ys = {}
 
@@ -63,10 +63,17 @@ def words_to_df(dict_data, papers, scope, words):
             if paper not in ys[word].keys():
                 ys[word][paper] = []
             for year in range(scope[0], scope[1]+1):
-                s = sum(dict_data[year][paper].values())
-                if word in dict_data[year][paper].keys():
-                    ys[word][paper].append(dict_data[year][paper][word]/s)
-                else:
+
+                print('accessing', year, paper, word)
+                try:
+                    with open(f'./data/komoran_counter_{year}_{paper}.pickle', 'rb') as f:
+                        counts = pickle.load(f)
+                    s = sum(counts.values())
+                    if s == 0:
+                        ys[word][paper].append(None)
+                    else:
+                        ys[word][paper].append(counts[word]/s)
+                except KeyError:
                     ys[word][paper].append(None)
 
     r = {'x': x}
@@ -99,7 +106,7 @@ print(user_input)
 if len(user_input) > 0:
     fig = go.Figure()
 
-    df = words_to_df(counteds, ['chosun', 'donga'], [START, END], user_input)
+    df = words_to_df(['chosun', 'donga'], [START, END], user_input)
 
     colors = ['#636EFA',
               '#EF553B',
