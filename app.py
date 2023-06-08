@@ -1,8 +1,6 @@
-import matplotlib
 import streamlit as st
 from collections import Counter
 import pickle
-import koreanize_matplotlib
 import pandas as pd
 import plotly.graph_objects as go
 
