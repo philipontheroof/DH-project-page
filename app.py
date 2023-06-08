@@ -41,6 +41,8 @@ def load_pickle():
     # Extract the single .zip file
     extract_zipfile(output_file, output_dir)
 
+    print('unzip done')
+
     counteds = {}
     for year in range(1920, 1999+1):
         counteds[year] = {}
@@ -48,6 +50,7 @@ def load_pickle():
             counteds[year]['chosun'] = pickle.load(f)
         with open(f'./data/komoran_counter_{year}_donga.pickle', 'rb') as f:
             counteds[year]['donga'] = pickle.load(f)
+        print(f'load {year} done')
     return counteds
 
 
